@@ -14,3 +14,11 @@ shared_ptr<Operation_t> makeOperation(const string & str){
     else
         return nullptr;
 }
+
+shared_ptr<Operation_t> makeSpecialUnarOperation(const string & str){
+    if (str == "-")
+        return make_shared<Negative_t>();
+    else
+        return nullptr;
+}
+

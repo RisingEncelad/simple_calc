@@ -5,6 +5,7 @@
 #include <cmath>
 
 shared_ptr<Operation_t> makeOperation(const string & str);
+shared_ptr<Operation_t> makeSpecialUnarOperation(const string & str);
 
 class Bracket_t : public Operation_t {
 public:
@@ -50,6 +51,14 @@ public:
     Pow_t() : Operation_t("^", 4, 2) {}
     double evalute() const override {
         return pow(args[0]->evalute(), args[1]->evalute());
+    }
+};
+
+class Negative_t : public Operation_t {
+public:
+    Negative_t() : Operation_t("-", 2, 1) {}
+    double evalute() const override {
+        return -(args[0]->evalute());
     }
 };
 #endif // OPERATIONS_H
