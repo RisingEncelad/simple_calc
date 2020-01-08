@@ -1,4 +1,4 @@
-#include "tools.h"
+#include "RPN.h"
 
 vector<string> parseExpr(const string & expr)
 {
@@ -59,7 +59,7 @@ queue<shared_ptr<Node>> parseTokens(const vector<string> & tokens) {
         else {
             shared_ptr<Operation_t> op;
             if (it == tokens.begin() || isOneSymbolOperator((it-1)->at(0)))
-                op = makeSpecialUnarOperation(t);
+                op = makeUnaryOperation(t);
             else
                 op = makeOperation(t);
             while (!s.empty() && dynamic_pointer_cast<Operation_t>(s.top())->priority >= op->priority) {

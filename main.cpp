@@ -4,18 +4,23 @@
 #include <algorithm>
 #include "Node.h"
 #include "Operations.h"
-#include "tools.h"
+#include "RPN.h"
+#include "test_framework.h"
 
 using namespace std;
 
 int main()
 {
-    string expr("7-2.3^0.5-(-22/2+3)");
+    string expr("3+7-2.3^-5");
     cout << "Expression: " << expr << endl;
-
-    auto tokens = parseExpr(expr);
-    auto rpn = parseTokens(tokens);
-    cout << "Answer: " << calcRPN(rpn) << endl;
-
+    try {
+        auto tokens = parseExpr(expr);
+        auto rpn = parseTokens(tokens);
+        cout << "Answer: " << calcRPN(rpn) << endl;
+    }  catch (exception & e) {
+        cout << "Catch exception: " << e.what() << endl;
+    }
     return 0;
 }
+
+

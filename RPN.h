@@ -1,6 +1,5 @@
-#ifndef TOOLS_H
-#define TOOLS_H
-
+#pragma once
+// Revers Polish Notation functions
 #include <vector>
 #include <string>
 #include <queue>
@@ -14,4 +13,3 @@ bool isOneSymbolOperator(char c);
 queue<shared_ptr<Node>> parseTokens(const vector<string> & tokens);
 double calcRPN(queue<shared_ptr<Node>> rpn);
 
-#endif // TOOLS_H

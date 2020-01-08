@@ -3,9 +3,11 @@
 
 #include "Node.h"
 #include <cmath>
+#include <map>
+#include <functional>
 
 shared_ptr<Operation_t> makeOperation(const string & str);
-shared_ptr<Operation_t> makeSpecialUnarOperation(const string & str);
+shared_ptr<Operation_t> makeUnaryOperation(const string & str);
 
 class Bracket_t : public Operation_t {
 public:
@@ -56,9 +58,23 @@ public:
 
 class Negative_t : public Operation_t {
 public:
-    Negative_t() : Operation_t("-", 2, 1) {}
+    Negative_t() : Operation_t("unary(-)", 5, 1) {}
     double evalute() const override {
         return -(args[0]->evalute());
     }
 };
+
+
+const map<string, function<shared_ptr<Operation_t>()>> str_to_binary_operation {
+    {"+", make_shared<Sum_t>},
+    {"-", make_shared<Dif_t>},
+    {"*", make_shared<Mult_t>},
+    {"/", make_shared<Div_t>},
+    {"^", make_shared<Pow_t>},
+};
+
+const map<string, function<shared_ptr<Operation_t>()>> str_to_unary_operation {
+    {"-", make_shared<Negative_t>},
+};
+
 #endif // OPERATIONS_H

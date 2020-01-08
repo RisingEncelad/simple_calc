@@ -6,10 +6,11 @@ CONFIG -= qt
 SOURCES += \
         Node.cpp \
         Operations.cpp \
-        main.cpp \
-        tools.cpp
+        RPN.cpp \
+        main.cpp
 
 HEADERS += \
     Node.h \
     Operations.h \
-    tools.h
+    RPN.h \
+    test_framework.h
