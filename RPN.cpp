@@ -1,4 +1,5 @@
 #include "RPN.h"
+#include <algorithm>
 
 vector<string> parseExpr(const string & expr)
 {
@@ -27,15 +28,15 @@ vector<string> parseExpr(const string & expr)
     return rez;
 }
 
-bool isOneSymbolOperator(const char c) {
+bool isOneSymbolOperator(const char op) {
     static const vector<char> arr = {'(', ')', ',', '+', '-', '*', '/', '^', '!'};
-    for (auto s : arr)
-        if (s == c)
-            return true;
-    return false;
+    return find(arr.begin(), arr.end(), op) != arr.end();
 }
 
-
+bool isRightUnarylOperator(const string & op) {
+    static const vector<string> arr = {"!"};
+    return find(arr.begin(), arr.end(), op) != arr.end();
+}
 
 queue<shared_ptr<Node>> parseTokens(const vector<string> & tokens) {
     stack<shared_ptr<Node>> s;
@@ -58,8 +59,12 @@ queue<shared_ptr<Node>> parseTokens(const vector<string> & tokens) {
         }
         else {
             shared_ptr<Operation_t> op;
-            if (it == tokens.begin() || isOneSymbolOperator((it-1)->at(0)))
+            if  (   it == tokens.begin() ||
+                    (isOneSymbolOperator((it-1)->at(0)) && !isRightUnarylOperator(*(it-1))) ||
+                    isRightUnarylOperator(*it))
+            {
                 op = makeUnaryOperation(t);
+            }
             else
                 op = makeOperation(t);
             while (!s.empty() && dynamic_pointer_cast<Operation_t>(s.top())->priority >= op->priority) {
@@ -93,4 +98,3 @@ double calcRPN(queue<shared_ptr<Node>> rpn) {
 
     return s.top()->evalute();
 }
-

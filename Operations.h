@@ -64,6 +64,30 @@ public:
     }
 };
 
+class Positive_t : public Operation_t {
+public:
+    Positive_t() : Operation_t("unary(+)", 5, 1) {}
+    double evalute() const override {
+        return args[0]->evalute();
+    }
+};
+
+class Factorial_t : public Operation_t {
+public:
+    Factorial_t() : Operation_t("!", 6, 1) {}
+    double evalute() const override {
+        int n = static_cast<int>(args[0]->evalute());
+        if (n < 0)
+            throw invalid_argument("get negative number for factorial: " + to_string(n));
+        else {
+            int f = 1;
+            for (int i = 1; i <= n; ++i)
+                f *= i;
+            return f;
+        }
+    }
+};
+
 
 const map<string, function<shared_ptr<Operation_t>()>> str_to_binary_operation {
     {"+", make_shared<Sum_t>},
@@ -75,6 +99,8 @@ const map<string, function<shared_ptr<Operation_t>()>> str_to_binary_operation {
 
 const map<string, function<shared_ptr<Operation_t>()>> str_to_unary_operation {
     {"-", make_shared<Negative_t>},
+    {"+", make_shared<Positive_t>},
+    {"!", make_shared<Factorial_t>},
 };
 
 #endif // OPERATIONS_H
