@@ -6,17 +6,20 @@
 #include "Operations.h"
 #include "RPN.h"
 #include "test_framework.h"
+#include "test_functions.h"
 
 using namespace std;
+void testAll();
+
 
 int main()
 {
-    string expr("(2+-5!)");
+    testAll();
+    cout << endl;
+    string expr("1+2");
     cout << "Expression: " << expr << endl;
     try {
-        auto tokens = parseExpr(expr);
-        auto rpn = parseTokens(tokens);
-        cout << "Answer: " << calcRPN(rpn) << endl;
+        cout << "Answer: " << calcExpr(expr) << endl;
     }  catch (exception & e) {
         cout << "Catch exception: " << e.what() << endl;
     }
@@ -24,3 +27,8 @@ int main()
 }
 
 
+void testAll() {
+    TestRunner tr;
+    tr.RunTest(testParserExpr, "testParserExpr");
+    tr.RunTest(testMathFunctions, "testMathFunctions");
+}

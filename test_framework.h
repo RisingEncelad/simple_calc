@@ -55,7 +55,7 @@ ostream& operator << (ostream& os, const map<K, V>& m) {
 
 template<class T, class U>
 void AssertEqual(const T& t, const U& u,
-    const string& hint)
+    const string& hint = "")
 {
   if (t != u) {
     ostringstream os;
@@ -64,6 +64,18 @@ void AssertEqual(const T& t, const U& u,
     throw runtime_error(os.str());
   }
 }
+
+template<class T, class U>
+void AssertEqualWithoutDetails(const T& t, const U& u,
+    const string& hint)
+{
+  if (t != u) {
+    ostringstream os;
+    os << "Assertion failed. Hint: " << hint;
+    throw runtime_error(os.str());
+  }
+}
+
 
 inline void Assert(bool b, const string& hint) {
   AssertEqual(b, true, hint);

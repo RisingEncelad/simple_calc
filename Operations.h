@@ -1,7 +1,7 @@
-#ifndef OPERATIONS_H
-#define OPERATIONS_H
+#pragma once
 
 #include "Node.h"
+#include "MathFunctions.h"
 #include <cmath>
 #include <map>
 #include <functional>
@@ -76,8 +76,11 @@ class Factorial_t : public Operation_t {
 public:
     Factorial_t() : Operation_t("!", 6, 1) {}
     double evalute() const override {
-        int n = static_cast<int>(args[0]->evalute());
-        if (n < 0)
+        double tmp = args[0]->evalute();
+        int n = static_cast<int>(tmp);
+        if (abs(tmp - n) > 0.0001)
+            throw invalid_argument("get float number for factorial: " + to_string(tmp));
+        else if (n < 0)
             throw invalid_argument("get negative number for factorial: " + to_string(n));
         else {
             int f = 1;
@@ -89,7 +92,12 @@ public:
 };
 
 
-const map<string, function<shared_ptr<Operation_t>()>> strToOperation {
+const StrToFuncMap_t strToUnaryOperation {
+    {"-", make_shared<Negative_t>},
+    {"+", make_shared<Positive_t>},
+};
+
+const StrToFuncMap_t strToSimpleOperation {
     {"+", make_shared<Sum_t>},
     {"-", make_shared<Dif_t>},
     {"*", make_shared<Mult_t>},
@@ -98,9 +106,9 @@ const map<string, function<shared_ptr<Operation_t>()>> strToOperation {
     {"!", make_shared<Factorial_t>},
 };
 
-const map<string, function<shared_ptr<Operation_t>()>> strToUnaryOperation {
-    {"-", make_shared<Negative_t>},
-    {"+", make_shared<Positive_t>},
+const map<string, double> strToConstant {
+    {"Pi", M_PI},
+    {"e", M_E},
 };
 
-#endif // OPERATIONS_H
+

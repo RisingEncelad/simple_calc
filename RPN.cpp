@@ -1,8 +1,12 @@
 #include "RPN.h"
 #include <algorithm>
 
-vector<string> parseExpr(const string & expr)
+vector<string> parseExpr(const string & exp)
 {
+    string expr = exp;
+    auto it = remove_if(expr.begin(), expr.end(), [](char ch) {return isspace(ch);} );
+    expr.erase(it, expr.end());
+
     auto endIt = expr.end();
     vector<string> rez;
     for (auto it = expr.begin(); it < endIt; ) {
@@ -19,7 +23,7 @@ vector<string> parseExpr(const string & expr)
         }
         else {
             auto tmp = it + 1;
-            while (tmp != endIt && !isOneSymbolOperator(*it))
+            while (tmp != endIt && !isOneSymbolOperator(*tmp))
                 ++tmp;
             rez.push_back(string(it, tmp));
             it = tmp;
@@ -52,6 +56,8 @@ queue<shared_ptr<Node>> parseTokens(const vector<string> & tokens) {
             }
             s.pop();
         }
+        else if (strToConstant.find(token) != strToConstant.end())
+            rpn.push(make_shared<Numerical>(strToConstant.at(token)));
         else {
             shared_ptr<Operation_t> op;
             if  (   (token == "+" || token == "-") && ( tokenIt == tokens.begin() ||
@@ -93,4 +99,11 @@ double calcRPN(queue<shared_ptr<Node>> rpn) {
     }
 
     return s.top()->evalute();
+}
+
+
+double calcExpr(const string & expr) {
+    auto tokens = parseExpr(expr);
+    auto rpn = parseTokens(tokens);
+    return calcRPN(rpn);
 }
