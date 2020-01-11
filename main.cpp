@@ -11,7 +11,7 @@ using namespace std;
 
 int main()
 {
-    string expr("-5!+2");
+    string expr("(2+-5!)");
     cout << "Expression: " << expr << endl;
     try {
         auto tokens = parseExpr(expr);

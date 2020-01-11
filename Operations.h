@@ -89,18 +89,18 @@ public:
 };
 
 
-const map<string, function<shared_ptr<Operation_t>()>> str_to_binary_operation {
+const map<string, function<shared_ptr<Operation_t>()>> strToOperation {
     {"+", make_shared<Sum_t>},
     {"-", make_shared<Dif_t>},
     {"*", make_shared<Mult_t>},
     {"/", make_shared<Div_t>},
     {"^", make_shared<Pow_t>},
+    {"!", make_shared<Factorial_t>},
 };
 
-const map<string, function<shared_ptr<Operation_t>()>> str_to_unary_operation {
+const map<string, function<shared_ptr<Operation_t>()>> strToUnaryOperation {
     {"-", make_shared<Negative_t>},
     {"+", make_shared<Positive_t>},
-    {"!", make_shared<Factorial_t>},
 };
 
 #endif // OPERATIONS_H

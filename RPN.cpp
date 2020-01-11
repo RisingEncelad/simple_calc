@@ -7,7 +7,7 @@ vector<string> parseExpr(const string & expr)
     vector<string> rez;
     for (auto it = expr.begin(); it < endIt; ) {
         if (isdigit(*it)) {
-            auto tmp = it+1;
+            auto tmp = it + 1;
             while (tmp != endIt && (isdigit(*tmp) || '.' == *tmp))
                 ++tmp;
             rez.push_back(string(it, tmp));
@@ -18,8 +18,8 @@ vector<string> parseExpr(const string & expr)
             ++it;
         }
         else {
-            auto tmp = it+1;
-            while (tmp != endIt && *tmp != '(')
+            auto tmp = it + 1;
+            while (tmp != endIt && !isOneSymbolOperator(*it))
                 ++tmp;
             rez.push_back(string(it, tmp));
             it = tmp;
@@ -29,29 +29,24 @@ vector<string> parseExpr(const string & expr)
 }
 
 bool isOneSymbolOperator(const char op) {
-    static const vector<char> arr = {'(', ')', ',', '+', '-', '*', '/', '^', '!'};
-    return find(arr.begin(), arr.end(), op) != arr.end();
-}
-
-bool isRightUnarylOperator(const string & op) {
-    static const vector<string> arr = {"!"};
-    return find(arr.begin(), arr.end(), op) != arr.end();
+    auto n = string("(),+-*/^!").find(op);
+    return n != string::npos;
 }
 
 queue<shared_ptr<Node>> parseTokens(const vector<string> & tokens) {
     stack<shared_ptr<Node>> s;
     queue<shared_ptr<Node>> rpn;
 
-    for (auto it = tokens.begin(); it != tokens.end(); ++it) {
-        auto t = *it;
-        if (isdigit(t[0]))
-           rpn.push(make_shared<Numerical>(atof(t.c_str())));
-        else if (t[0] == ',')
+    for (auto tokenIt = tokens.begin(); tokenIt != tokens.end(); ++tokenIt) {
+        auto token = *tokenIt;
+        if (isdigit(token[0]))
+           rpn.push(make_shared<Numerical>(atof(token.c_str())));
+        else if (token == ",")
             continue;
-        else if (t == "(")
-            s.push(make_shared<Bracket_t>(t));
-        else if (t == ")") {
-            while (s.top()->strVal() != "(") {
+        else if (token == "(")
+            s.push(make_shared<Bracket_t>(token));
+        else if (token == ")") {
+            while (typeid(*s.top()) != typeid(Bracket_t)) {
                 rpn.push(s.top());
                 s.pop();
             }
@@ -59,14 +54,15 @@ queue<shared_ptr<Node>> parseTokens(const vector<string> & tokens) {
         }
         else {
             shared_ptr<Operation_t> op;
-            if  (   it == tokens.begin() ||
-                    (isOneSymbolOperator((it-1)->at(0)) && !isRightUnarylOperator(*(it-1))) ||
-                    isRightUnarylOperator(*it))
+            if  (   (token == "+" || token == "-") && ( tokenIt == tokens.begin() ||
+                    (isOneSymbolOperator((tokenIt-1)->at(0)) && (tokenIt-1)->at(0) != '!') )
+                )
             {
-                op = makeUnaryOperation(t);
+                op = makeUnaryOperation(token);
             }
             else
-                op = makeOperation(t);
+                op = makeOperation(token);
+
             while (!s.empty() && dynamic_pointer_cast<Operation_t>(s.top())->priority >= op->priority) {
                 rpn.push(s.top());
                 s.pop();
